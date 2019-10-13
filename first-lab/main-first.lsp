@@ -8,8 +8,8 @@
 ; Исходные данные:
 ; (TYPE H READ)
 
-(setq firstlist '(TYPE PRINT DEL))
-(setq secondlist (H (H J O) (U J N))
-(setq thirdlist (READ SAVE LOAD (TXT)))
+(defparameter firstlist '(TYPE PRINT DEL))
+(defparameter secondlist '(H (H J O) (U J N)))
+(defparameter thirdlist '(READ SAVE LOAD (TXT)))
 
 (print ((lambda(a b c) (list (car a) (car b) (car c))) firstlist secondlist thirdlist))

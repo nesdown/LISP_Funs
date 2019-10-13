@@ -8,9 +8,9 @@
 ; Порядок элементов:
 ; 3, 2, 3
 
-(setq firstlist '(TYPE PRINT DEL))
-(setq secondlist '(H (HJO) (U J N)))
-(setq thirdlist '(READ SAVE LOAD (TXT)))
+(defparameter firstlist '(TYPE PRINT DEL))
+(defparameter secondlist '(H (HJO) (U J N)))
+(defparameter thirdlist '(READ SAVE LOAD (TXT)))
 
 (defun lister(a b c)
   (list
