@@ -70,7 +70,7 @@
 (defun select (selector-fn)
   (remove-if-not selector-fn *db*))
 
-Здесь мы описываем пакет функций, которые позволяют написать функцию-селектор универсальной, не усложняя процесса разработки.
+; Здесь мы описываем пакет функций, которые позволяют написать функцию-селектор универсальной, не усложняя процесса разработки.
 (defun make-comparison-expr (field value)
   `(equal (getf cd ,field) ,value))
 
@@ -78,9 +78,21 @@
   (loop while fields
      collecting (make-comparison-expr (pop fields) (pop fields))))
 
+; Определяем макро-функцию, которая выполняет поиск и возврат значений по ключу
 (defmacro where (&rest clauses)
   `#'(lambda (cd) (and ,@(make-comparisons-list clauses))))
 
+; Первая версия функции, принимающая вариативный ключ.
+; (defun where (&key model manufacturer price (available nil available-p))
+;   #'(lambda (cd)
+;       (and
+;        (if model    (equal (getf cd :model)  model)  t)
+;        (if manufacturer   (equal (getf cd :manufacturer) manufacturer) t)
+;        (if price   (equal (getf cd :price) price) t)
+;        (if available-p (equal (getf cd :available) available) t))))
+
+; Функция обновления записей в базе.
+; MAPCAR передвигается по списку, итерируя его, и возвращает необходимые совпадения.
 (defun update (selector-fn &key model manufacturer price (available nil available-p))
   (setf *db*
         (mapcar
@@ -92,8 +104,10 @@
                (if available-p (setf (getf row :available) available)))
              row) *db*)))
 
+; Функция удаления строк из базы, принимая аргументом функцию-селектор.
 (defun delete-rows (selector-fn)
   (setf *db* (remove-if selector-fn *db*)))
 
 (add-models)
 (save-db "cds.asd")
+(select (where :manufacturer "Samsung"))
