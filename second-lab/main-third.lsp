@@ -50,3 +50,5 @@
   (cocktailIter arr 0 (- (list-length arr) 1))
   arr
 )
+
+(print (cocktail '(1750 301 750 25 57 10 4 15)))

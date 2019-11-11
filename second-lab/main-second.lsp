@@ -3,25 +3,57 @@
 ; Методом Кнута
 ; https://gist.github.com/llibra/2948765
 
-(defparameter 'testList (1750 701 301 132 57 23 10 4 1))
+; (defparameter 'testList (1750 701 301 132 57 23 10 4 1))
 
-(defun gap-insertion-sort (array predicate gap)
-  (let ((length (length array)))
-    (if (< length 2) array
-      (do ((i 1 (1+ i))) ((eql i length) array)
-        (do ((x (aref array i))
-             (j i (- j gap)))
-            ((or (minusp (- j gap))
-                 (not (funcall predicate x (aref array (1- j)))))
-             (setf (aref array j) x))
-          (setf (aref array j) (aref array (- j gap))))))))
+; n - общая длинна аргумента
+; h - последовательность Кнута с условием h < n
+(defun knuth (n h)
+  (cond
+    ((< h (/ n 3)) (knuth n (+ (* h 3) 1)))
+    (T h)
+  )
+)
 
-(defconstant +gaps+
-  '(9841 3280 1093 364 121 40 13 4 1)
-  "The best sequence of gaps, according to Donald E. Knuth.")
+; Обертка функции сортировщика
+(defun shell (arr)
+  (shellWrapper arr (knuth (list-length arr) 1) (list-length arr)))
 
-(defun shell-sort (array predicate &optional (gaps +gaps+))
-  (assert (eql 1 (car (last gaps))) (gaps)
-    "Last gap of ~w is not 1." gaps)
-  (dolist (gap gaps array)
-    (gap-insertion-sort array predicate gap)))
+
+; Рекурсивная обертка, работающая с последовательностью Кнута
+(defun shellWrapper (arr h n)
+  (cond
+    ((>= h 1) (shellWrapper (insertion arr h h n) (floor (/ h 3)) n))
+    (T arr)
+  )
+)
+
+; Итерируем массив, запуская рекурсивный insertion-проверку на элементах
+(defun insertion (arr h i n)
+  (cond
+    ((>= i n) arr)
+    (T (insertion (insertionLoop arr i h) h (+ i 1) n))
+  )
+)
+
+; Рекурсивная функция, меняющая местами параметры соответтсвенно проверке
+(defun insertionLoop (arr j h)
+  (cond
+    ((and (>= j h) (< (nth j arr) (nth (- j h) arr)))
+      (insertionLoop (swap arr j (- j h)) (- j h) h))
+    (T arr)
+  )
+)
+
+(defun swap (lst i j)
+  (swapWrap lst 0 i j (nth i lst) (nth j lst)))
+
+(defun swapWrap (lst current i j val-i val-j)
+  (cond
+    ((null lst) NIL)
+    ((= current i) (cons val-j (swapWrap (cdr lst) (+ current 1) i j val-i val-j)))
+    ((= current j) (cons val-i (swapWrap (cdr lst) (+ current 1) i j val-i val-j)))
+    (T (cons (car lst) (swapWrap (cdr lst) (+ current 1) i j val-i val-j)))
+  )
+)
+
+(print (shell '(1750 701 301 89 132 45 57 23 10 4 1)))

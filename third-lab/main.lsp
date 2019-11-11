@@ -108,6 +108,15 @@
 (defun delete-rows (selector-fn)
   (setf *db* (remove-if selector-fn *db*)))
 
-(add-models)
-(save-db "cds.asd")
-(select (where :manufacturer "Samsung"))
+(defun sorter ()
+  (print (sort *db*
+  #'string-lessp
+  :key #'(lambda (x) (getf x :price))
+  )
+  )
+)
+
+(load-db "cds.asd")
+(dump-db)
+(sorter)
+

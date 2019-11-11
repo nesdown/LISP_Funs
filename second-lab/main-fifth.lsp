@@ -16,3 +16,5 @@
     (t (cons (car arr) (divider (cdr arr))))
   )
 )
+
+(print (divider '(4 97 3 15 27 (23 43 20 12) 20 40 92)))
